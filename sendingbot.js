@@ -17,8 +17,13 @@ venom.create({
     app.post('/send-whatsapp', async (req, res) => {
         console.log('Received a POST request to /send-whatsapp');
         try {
-            console.log('Sending message...');
-            const result = await clientInstance.sendText('6281349807050@c.us', '👋 Hello from venom!');
+            const { number, message } = req.body; // Extract number and message from request body
+            if (!number || !message) {
+                return res.status(400).send('Please provide both number and message');
+            }
+
+            console.log(`Sending message "${message}" to ${number}...`);
+            const result = await clientInstance.sendText(`${number}@c.us`, message);
             console.log('Result: ', result);
             res.status(200).send('Message sent successfully');
         } catch (error) {
